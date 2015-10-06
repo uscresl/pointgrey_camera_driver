@@ -243,6 +243,8 @@ private:
 
   bool setProperty(const FlyCapture2::PropertyType &type, const bool &autoSet,  unsigned int &valueA,  unsigned int &valueB);
 
+  bool setPropertyRange(const FlyCapture2::PropertyType &type, double &minValue, double &maxValue);
+
   /*!
   * \brief Generic wrapper for setting properties in FlyCapture2
   *

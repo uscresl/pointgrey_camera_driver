@@ -105,6 +105,8 @@ bool PointGreyCamera::setNewConfiguration(pointgrey_camera_driver::PointGreyConf
 
   // Set shutter time
   double shutter = 1000.0 * config.shutter_speed; // Needs to be in milliseconds
+  double shutter_min = 1000.0 * config.shutter_speed_min, shutter_max = 1000.0 * config.shutter_speed_max;
+  retVal &= PointGreyCamera::setPropertyRange(SHUTTER, shutter_min, shutter_max);
   retVal &= PointGreyCamera::setProperty(SHUTTER, config.auto_shutter, shutter);
   config.shutter_speed = shutter / 1000.0; // Needs to be in seconds
 
@@ -424,6 +426,17 @@ bool PointGreyCamera::getFormat7PixelFormatFromString(std::string &sformat, FlyC
   }
 
   return retVal;
+}
+
+bool PointGreyCamera::setPropertyRange(const FlyCapture2::PropertyType &type, double &minValue, double &maxValue) {
+  PropertyInfo pInfo;
+  pInfo.type = type;
+  Error error = cam_.GetPropertyInfo(&pInfo);
+  PointGreyCamera::handleError("PointGreyCamera::setPropertyRange could not get property info.", error);
+  if (pInfo.present) {
+    pInfo.absMin = minValue;
+    pInfo.absMax = maxValue;
+  }
 }
 
 bool PointGreyCamera::setProperty(const FlyCapture2::PropertyType &type, const bool &autoSet, unsigned int &valueA, unsigned int &valueB)
